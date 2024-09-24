@@ -43,6 +43,10 @@ impl Agent for OneMaxAgent {
             }
         }
     }
+
+    fn evaluate(&self) -> f64 {
+        (self.genome.iter_ones().count() as f64) / (self.genome.len() as f64)
+    }
 }
 
 pub fn main() {}
