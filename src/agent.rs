@@ -1,5 +1,5 @@
 pub trait Agent {
     fn mate(&self, other: &Self) -> Self;
 
-    fn mutate() -> Self;
+    fn mutate(&mut self);
 }
