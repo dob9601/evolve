@@ -1,5 +1,6 @@
 use bitvec::{array::BitArray, bitarr};
-use evolve::agent::Agent;
+use evolve::{agent::Agent, simulation::Simulation};
+use log::{info, LevelFilter};
 use rand::Rng;
 
 pub struct OneMaxAgent {
@@ -49,4 +50,12 @@ impl Agent for OneMaxAgent {
     }
 }
 
-pub fn main() {}
+pub fn main() {
+    env_logger::init();
+
+    info!("Test");
+
+    let mut simulation: Simulation<OneMaxAgent> = Simulation::new(2000, 0.05);
+
+    simulation.run(20);
+}

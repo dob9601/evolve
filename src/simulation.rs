@@ -20,10 +20,10 @@ impl<T: Agent> Simulation<T> {
         }
     }
 
-    pub fn run(&mut self, iterations: usize) {
+    pub fn run(&mut self, generations: usize) {
         info!("Commencing evolutionary simulation");
 
-        for i in 0..iterations {
+        for i in 0..generations {
             info!("Generation #{i}");
 
             let agents = std::mem::take(&mut self.agents);
@@ -50,7 +50,9 @@ impl<T: Agent> Simulation<T> {
                 .into_iter()
                 .map(|(_score, agent)| agent)
                 .take(self.population_size)
-                .collect()
+                .collect();
+
+            info!("Complete: {}", self.generate_stats())
         }
     }
 
@@ -61,6 +63,11 @@ impl<T: Agent> Simulation<T> {
             .map(|agent| agent.evaluate())
             .collect_vec();
 
-        GenerationStatistics::new(scores.min(), scores.max(), scores.mean())
+        GenerationStatistics::new(
+            scores.clone().min(),
+            scores.clone().max(),
+            scores.clone().mean(),
+            scores.std_dev(),
+        )
     }
 }
