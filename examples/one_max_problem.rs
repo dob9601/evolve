@@ -21,7 +21,7 @@ impl Default for OneMaxAgent {
 }
 
 impl Agent for OneMaxAgent {
-    fn mate(&self, other: &Self) -> Self {
+    fn crossover(&self, other: &Self) -> Self {
         let mut genome = bitarr![0; 64];
         for (index, bit) in self.genome.iter().enumerate() {
             let other_bit = other.genome[index];

@@ -4,7 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+itertools = "0.13.0"
 log = "0.4.22"
+statrs = "0.17.1"
 
 [dev-dependencies]
 bitvec = "1.0.1"

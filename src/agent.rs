@@ -1,5 +1,5 @@
 pub trait Agent: Default {
-    fn mate(&self, other: &Self) -> Self;
+    fn crossover(&self, other: &Self) -> Self;
 
     fn mutate(&mut self);
 
