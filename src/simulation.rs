@@ -52,6 +52,8 @@ impl<T: Agent> Simulation<T> {
                 .take(self.population_size)
                 .collect();
 
+            println!("{:?}", self.agents[0]);
+
             info!("Complete: {}", self.generate_stats())
         }
     }

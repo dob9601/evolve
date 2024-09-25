@@ -1,8 +1,9 @@
 use bitvec::{array::BitArray, bitarr};
 use evolve::{agent::Agent, simulation::Simulation};
-use log::{info, LevelFilter};
+use log::info;
 use rand::Rng;
 
+#[derive(Debug)]
 pub struct OneMaxAgent {
     genome: BitArray,
 }
@@ -10,7 +11,7 @@ pub struct OneMaxAgent {
 impl OneMaxAgent {
     pub fn new() -> Self {
         OneMaxAgent {
-            genome: bitarr![1; 64],
+            genome: bitarr![0; 64],
         }
     }
 }
