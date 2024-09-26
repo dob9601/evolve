@@ -1,18 +1,21 @@
 use bitvec::{array::BitArray, bitarr};
 use evolve::{agent::Agent, simulation::Simulation};
-use log::info;
 use rand::Rng;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct OneMaxAgent {
     genome: BitArray,
 }
 
 impl OneMaxAgent {
     pub fn new() -> Self {
-        OneMaxAgent {
+        let mut agent = OneMaxAgent {
             genome: bitarr![0; 64],
-        }
+        };
+
+        agent.mutate(0.5);
+
+        agent
     }
 }
 
@@ -38,25 +41,23 @@ impl Agent for OneMaxAgent {
         Self { genome }
     }
 
-    fn mutate(&mut self) {
+    fn mutate(&mut self, mutation_chance: f64) {
         for mut bit in self.genome.iter_mut() {
-            if rand::thread_rng().gen::<f32>() < 0.001 {
+            if rand::thread_rng().gen::<f64>() < mutation_chance {
                 *bit ^= true
             }
         }
     }
 
     fn evaluate(&self) -> f64 {
-        (self.genome.iter_ones().count() as f64) / (self.genome.len() as f64)
+        self.genome.iter_ones().count() as f64
     }
 }
 
 pub fn main() {
     env_logger::init();
 
-    info!("Test");
+    let mut simulation: Simulation<OneMaxAgent> = Simulation::new(20000, 0.05, 1e-2);
 
-    let mut simulation: Simulation<OneMaxAgent> = Simulation::new(2000, 0.05);
-
-    simulation.run(20);
+    simulation.run(1000);
 }

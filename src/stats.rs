@@ -21,7 +21,7 @@ impl GenerationStatistics {
 impl Display for GenerationStatistics {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(&format!(
-            "<Min: {} | Max: {} | Mean: {} | Standard Deviation: {}",
+            "<Min: {:.3} | Max: {:.3} | Mean: {:.3} | Standard Deviation: {:.3}>",
             self.min, self.max, self.mean, self.std_deviation
         ))
     }
