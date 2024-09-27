@@ -3,7 +3,12 @@ name = "evolve"
 version = "0.1.0"
 edition = "2021"
 
+[[bench]]
+name = "one_max_problem"
+harness = false
+
 [dependencies]
+criterion = { version = "0.5.1", features = ["html_reports"] }
 itertools = "0.13.0"
 log = "0.4.22"
 rand = "0.8.5"
@@ -12,4 +17,6 @@ statrs = "0.17.1"
 
 [dev-dependencies]
 bitvec = "1.0.1"
+criterion = "0.5.1"
 env_logger = "0.11.5"
+
