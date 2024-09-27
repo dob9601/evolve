@@ -1,6 +1,6 @@
 use bitvec::{array::BitArray, bitarr};
 use criterion::{criterion_group, criterion_main, Criterion};
-use evolve::{agent::Agent, simulation::Simulation};
+use evolve::{agent::Agent, simulation_multithreaded::MultithreadedSimulator};
 use rand::Rng;
 
 #[derive(Debug, Clone)]
@@ -58,7 +58,8 @@ impl Agent for OneMaxAgent {
 pub fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("one_max_problem", |b| {
         b.iter(|| {
-            let mut simulation: Simulation<OneMaxAgent> = Simulation::new(1000, 0.05, 1e-2);
+            let mut simulation: MultithreadedSimulator<OneMaxAgent> =
+                MultithreadedSimulator::new(1000, 0.05, 1e-2);
 
             simulation.run(50);
         })

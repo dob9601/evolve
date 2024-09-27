@@ -3,18 +3,19 @@ use std::time::Instant;
 use itertools::Itertools;
 use log::{info, trace};
 use rand::{thread_rng, Rng};
+use rayon::prelude::*;
 use statrs::statistics::Statistics;
 
 use crate::{agent::Agent, stats::GenerationStatistics};
 
-pub struct Simulation<T: Agent> {
+pub struct MultithreadedSimulator<T: Agent> {
     agents: Vec<T>,
     crossover_chance: f64,
     mutation_chance: f64,
     population_size: usize,
 }
 
-impl<T: Agent> Simulation<T> {
+impl<T: Agent + Send + Sync> MultithreadedSimulator<T> {
     pub fn new(population_size: usize, crossover_chance: f64, mutation_chance: f64) -> Self {
         Self {
             agents: (0..population_size).map(|_| T::default()).collect(),
@@ -34,11 +35,9 @@ impl<T: Agent> Simulation<T> {
 
             let agents = std::mem::take(&mut self.agents);
 
-            let agent_pairs = agents.into_iter().chunks(2);
+            let agent_pairs = agents.into_par_iter().chunks(2);
 
-            let next_generation = agent_pairs.into_iter().flat_map(|chunk| {
-                let mut chunk = chunk.collect_vec();
-
+            let next_generation = agent_pairs.flat_map(|mut chunk| {
                 if chunk.len() == 2 && thread_rng().gen::<f64>() < self.crossover_chance {
                     let child = chunk[0].crossover(&chunk[1]);
                     chunk.push(child);
@@ -47,14 +46,17 @@ impl<T: Agent> Simulation<T> {
                 chunk
             });
 
-            let evaluated = next_generation
+            let mut evaluated: Vec<_> = next_generation
                 .map(|mut agent| {
                     agent.mutate(self.mutation_chance);
                     (agent.evaluate(), agent)
                 })
-                .sorted_unstable_by(|(a, _), (b, _)| b.total_cmp(a));
+                .collect();
+
+            evaluated.par_sort_unstable_by(|(a, _), (b, _)| b.total_cmp(a));
 
             self.agents = evaluated
+                .into_par_iter()
                 .map(|(_score, agent)| agent)
                 .take(self.population_size)
                 .collect();

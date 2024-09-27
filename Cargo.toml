@@ -5,6 +5,7 @@ edition = "2021"
 
 [[bench]]
 name = "one_max_problem"
+path = "examples/one_max_problem.rs"
 harness = false
 
 [dependencies]
