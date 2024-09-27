@@ -1,6 +1,9 @@
+use std::time::Instant;
+
 use itertools::Itertools;
 use log::{info, trace};
 use rand::{thread_rng, Rng};
+use rayon::prelude::*;
 use statrs::statistics::Statistics;
 
 use crate::{agent::Agent, stats::GenerationStatistics};
@@ -27,6 +30,9 @@ impl<T: Agent> Simulation<T> {
 
         for i in 0..generations {
             trace!("Starting generation #{i}");
+
+            let now = Instant::now();
+
             let agents = std::mem::take(&mut self.agents);
 
             let agent_pairs = agents.into_iter().chunks(2);
@@ -42,23 +48,25 @@ impl<T: Agent> Simulation<T> {
                 chunk
             });
 
-            let mut evaluated = next_generation
-                .into_iter()
+            let evaluated = next_generation
                 .map(|mut agent| {
                     agent.mutate(self.mutation_chance);
                     (agent.evaluate(), agent)
                 })
-                .collect::<Vec<_>>();
-
-            evaluated.sort_unstable_by(|(a, _), (b, _)| b.partial_cmp(a).unwrap());
+                .sorted_unstable_by(|(a, _), (b, _)| b.total_cmp(a));
 
             self.agents = evaluated
-                .into_iter()
                 .map(|(_score, agent)| agent)
                 .take(self.population_size)
                 .collect();
 
-            info!("Generation #{i}: {}", self.generate_stats());
+            let elapsed_time = now.elapsed().as_millis() as f32 / 1000f32;
+
+            info!(
+                "Generation #{i} completed in {} seconds: {}",
+                elapsed_time,
+                self.generate_stats()
+            );
         }
     }
 

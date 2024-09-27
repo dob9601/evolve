@@ -57,7 +57,7 @@ impl Agent for OneMaxAgent {
 pub fn main() {
     env_logger::init();
 
-    let mut simulation: Simulation<OneMaxAgent> = Simulation::new(20000, 0.05, 1e-2);
+    let mut simulation: Simulation<OneMaxAgent> = Simulation::new(1000, 0.05, 1e-2);
 
-    simulation.run(1000);
+    simulation.run(200);
 }
