@@ -11,6 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: "Install hyperfine"
+        run: |
+          wget https://github.com/sharkdp/hyperfine/releases/download/v1.16.1/hyperfine_1.16.1_amd64.deb
+          sudo dpkg -i hyperfine_1.16.1_amd64.deb
+
       - name: "Build the One Max Problem example"
         run: cargo build --release --example one_max_problem
 
@@ -22,6 +27,7 @@ jobs:
           --token '${{ secrets.BENCHER_API_TOKEN }}' \
           --branch master \
           --testbed ubuntu-latest \
-          --adapter json \
+          --adapter shell_hyperfine \
+          --file results.json \
           --err \
-          "./target/release/examples/one_max_problem"
+          "hyperfine --export-json results.json ./target/release/examples/one_max_problem"
