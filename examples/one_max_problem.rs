@@ -1,5 +1,7 @@
 use bitvec::{array::BitArray, bitarr};
-use evolve::{agent::Agent, simulation_multithreaded::MultithreadedSimulator};
+use evolve::{
+    agent::Agent, simulation::Simulation, simulation_multithreaded::MultithreadedSimulator,
+};
 use rand::Rng;
 
 #[derive(Debug, Clone)]
@@ -55,8 +57,7 @@ impl Agent for OneMaxAgent {
 }
 
 pub fn main() {
-    let mut simulation: MultithreadedSimulator<OneMaxAgent> =
-        MultithreadedSimulator::new(1000, 0.05, 1e-2);
+    let mut simulation: Simulation<OneMaxAgent> = Simulation::new(1000, 0.05, 1e-2);
 
     simulation.run(50);
 }
