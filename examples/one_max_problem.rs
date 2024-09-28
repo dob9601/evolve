@@ -1,5 +1,5 @@
 use bitvec::{array::BitArray, bitarr};
-use evolve::{agent::Agent, simulation_multithreaded::MultithreadedSimulator};
+use evolve::{agent::Agent, simulator::MultithreadedSimulator};
 use rand::Rng;
 
 #[derive(Debug, Clone)]

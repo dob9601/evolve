@@ -7,14 +7,14 @@ use statrs::statistics::Statistics;
 
 use crate::{agent::Agent, stats::GenerationStatistics};
 
-pub struct Simulation<T: Agent> {
+pub struct BasicSimulator<T: Agent> {
     agents: Vec<T>,
     crossover_chance: f64,
     mutation_chance: f64,
     population_size: usize,
 }
 
-impl<T: Agent> Simulation<T> {
+impl<T: Agent> BasicSimulator<T> {
     pub fn new(population_size: usize, crossover_chance: f64, mutation_chance: f64) -> Self {
         Self {
             agents: (0..population_size).map(|_| T::default()).collect(),
