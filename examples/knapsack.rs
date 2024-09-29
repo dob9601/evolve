@@ -76,11 +76,14 @@ impl Agent for KnapsackAgent<'_> {
 
         self.sack = sack
             .into_iter()
-            .map(|item| {
-                if rng.gen::<f64>() < mutation_chance {
-                    ITEMS.choose(&mut rng).unwrap()
+            .flat_map(|item| {
+                let p = rng.gen::<f64>();
+                if p < (mutation_chance / 2f64) {
+                    vec![ITEMS.choose(&mut rng).unwrap()]
+                } else if p < mutation_chance {
+                    vec![]
                 } else {
-                    item
+                    vec![item]
                 }
             })
             .collect_vec()
@@ -118,7 +121,7 @@ fn main() {
     env_logger::init();
 
     let mut simulator: MultithreadedSimulator<KnapsackAgent> =
-        MultithreadedSimulator::new(1000, 1e-2, 1e-2);
+        MultithreadedSimulator::new(10000, 1e-3, 1e-3);
 
-    simulator.run(100);
+    simulator.run(1000);
 }
