@@ -55,6 +55,8 @@ impl Agent for OneMaxAgent {
 }
 
 pub fn main() {
+    env_logger::init();
+
     let mut simulation: MultithreadedSimulator<OneMaxAgent> =
         MultithreadedSimulator::new(1000, 0.05, 1e-2);
 

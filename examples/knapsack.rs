@@ -1,6 +1,10 @@
-use itertools::Itertools;
-use rand::Rng;
+use std::cmp::min;
 
+use evolve::{agent::Agent, simulator::MultithreadedSimulator};
+use itertools::Itertools;
+use rand::{seq::SliceRandom, thread_rng, Rng};
+
+#[derive(Clone, Debug)]
 struct KnapsackItem {
     pub weight: u16,
     pub value: u16,
@@ -19,15 +23,102 @@ const ITEMS: [KnapsackItem; 10] = [
     KnapsackItem::new(13, 9),
 ];
 
+const MAX_WEIGHT: u8 = 30;
+const MAX_ITEMS: u8 = 5;
+
+#[derive(Clone, Debug)]
+struct KnapsackAgent<'a> {
+    sack: Vec<&'a KnapsackItem>,
+}
+
+impl KnapsackAgent<'_> {
+    pub fn get_sack_weight(&self) -> u16 {
+        self.sack.iter().map(|item| item.weight).sum()
+    }
+
+    pub fn get_sack_value(&self) -> u16 {
+        self.sack.iter().map(|item| item.value).sum()
+    }
+}
+
+impl Default for KnapsackAgent<'_> {
+    fn default() -> Self {
+        let mut rng = thread_rng();
+        let mut sack = vec![];
+
+        let total_weight = 0;
+
+        while sack.len() < MAX_ITEMS as usize && total_weight < MAX_WEIGHT {
+            sack.push(ITEMS.choose(&mut rng).unwrap());
+        }
+
+        KnapsackAgent { sack }
+    }
+}
+
+impl Agent for KnapsackAgent<'_> {
+    fn crossover(&self, other: &Self) -> Self {
+        let mut rng = thread_rng();
+
+        let min_length = min(other.sack.len(), self.sack.len());
+        let crossover_point = rng.gen_range(0..min_length);
+
+        let mut new_sack = self.sack[0..crossover_point].to_vec();
+        new_sack.extend(other.sack[crossover_point..other.sack.len()].iter());
+
+        Self { sack: new_sack }
+    }
+
+    fn mutate(&mut self, mutation_chance: f64) {
+        let mut rng = thread_rng();
+
+        let sack = std::mem::take(&mut self.sack);
+
+        self.sack = sack
+            .into_iter()
+            .map(|item| {
+                if rng.gen::<f64>() < mutation_chance {
+                    ITEMS.choose(&mut rng).unwrap()
+                } else {
+                    item
+                }
+            })
+            .collect_vec()
+    }
+
+    fn evaluate(&self) -> f64 {
+        let sack_size_overflow = self.sack.len() as i16 - MAX_ITEMS as i16;
+        let sack_weight_overflow = self.get_sack_weight() as i16 - MAX_WEIGHT as i16;
+
+        let mut score = 0;
+
+        if sack_size_overflow > 0 {
+            score -= sack_size_overflow
+        }
+
+        if sack_weight_overflow > 0 {
+            score -= sack_weight_overflow
+        }
+
+        if score != 0 {
+            score.into()
+        } else {
+            self.get_sack_value().into()
+        }
+    }
+}
+
 impl KnapsackItem {
     const fn new(weight: u16, value: u16) -> Self {
         Self { weight, value }
     }
-
-    fn random() -> Self {
-        let mut rng = rand::thread_rng();
-        KnapsackItem::new(rng.gen_range(0..20), rng.gen_range(0..200))
-    }
 }
 
-fn main() {}
+fn main() {
+    env_logger::init();
+
+    let mut simulator: MultithreadedSimulator<KnapsackAgent> =
+        MultithreadedSimulator::new(1000, 1e-2, 1e-2);
+
+    simulator.run(100);
+}
