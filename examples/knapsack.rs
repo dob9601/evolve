@@ -78,12 +78,15 @@ impl Agent for KnapsackAgent<'_> {
             .into_iter()
             .flat_map(|item| {
                 let p = rng.gen::<f64>();
-                if p < (mutation_chance / 2f64) {
-                    vec![ITEMS.choose(&mut rng).unwrap()]
+
+                if p < (mutation_chance / (1f64 / 3f64)) {
+                    vec![ITEMS.choose(&mut rng).unwrap()] // Change the item
+                } else if p < (mutation_chance / (2f64 / 3f64)) {
+                    vec![] // Remove the item
                 } else if p < mutation_chance {
-                    vec![]
+                    vec![item, ITEMS.choose(&mut rng).unwrap()] // Keep the item, but add a new one
                 } else {
-                    vec![item]
+                    vec![item] // Else, do nothing
                 }
             })
             .collect_vec()
