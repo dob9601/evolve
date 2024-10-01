@@ -6,8 +6,8 @@ use rand::{seq::SliceRandom, thread_rng, Rng};
 
 #[derive(Clone, Debug)]
 struct KnapsackItem {
-    pub weight: u16,
-    pub value: u16,
+    pub weight: i16,
+    pub value: i16,
 }
 
 const ITEMS: [KnapsackItem; 10] = [
@@ -23,8 +23,8 @@ const ITEMS: [KnapsackItem; 10] = [
     KnapsackItem::new(13, 9),
 ];
 
-const MAX_WEIGHT: u8 = 30;
-const MAX_ITEMS: u8 = 5;
+const MAX_WEIGHT: i16 = 30;
+const MAX_ITEMS: i16 = 5;
 
 #[derive(Clone, Debug)]
 struct KnapsackAgent<'a> {
@@ -32,11 +32,11 @@ struct KnapsackAgent<'a> {
 }
 
 impl KnapsackAgent<'_> {
-    pub fn get_sack_weight(&self) -> u16 {
+    pub fn get_sack_weight(&self) -> i16 {
         self.sack.iter().map(|item| item.weight).sum()
     }
 
-    pub fn get_sack_value(&self) -> u16 {
+    pub fn get_sack_value(&self) -> i16 {
         self.sack.iter().map(|item| item.value).sum()
     }
 }
@@ -56,7 +56,7 @@ impl Default for KnapsackAgent<'_> {
     }
 }
 
-impl Agent for KnapsackAgent<'_> {
+impl Agent<i16> for KnapsackAgent<'_> {
     fn crossover(&self, other: &Self) -> Self {
         let mut rng = thread_rng();
 
@@ -92,7 +92,7 @@ impl Agent for KnapsackAgent<'_> {
             .collect_vec()
     }
 
-    fn evaluate(&self) -> f64 {
+    fn evaluate(&self) -> i16 {
         let sack_size_overflow = self.sack.len() as i16 - MAX_ITEMS as i16;
         let sack_weight_overflow = self.get_sack_weight() as i16 - MAX_WEIGHT as i16;
 
@@ -115,7 +115,7 @@ impl Agent for KnapsackAgent<'_> {
 }
 
 impl KnapsackItem {
-    const fn new(weight: u16, value: u16) -> Self {
+    const fn new(weight: i16, value: i16) -> Self {
         Self { weight, value }
     }
 }

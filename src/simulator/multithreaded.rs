@@ -8,7 +8,7 @@ use statrs::statistics::Statistics;
 
 use crate::{agent::Agent, stats::GenerationStatistics};
 
-pub struct MultithreadedSimulator<T: Agent> {
+pub struct MultithreadedSimulator<T: Agent<U> {
     agents: Vec<T>,
     crossover_chance: f64,
     mutation_chance: f64,
