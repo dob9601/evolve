@@ -16,6 +16,7 @@ pub struct MultithreadedSimulator<T: Agent> {
     crossover_chance: f64,
     mutation_chance: f64,
     population_size: usize,
+    generation: usize,
     pub stats: Stats,
 }
 
@@ -26,6 +27,7 @@ impl<T: Agent + Send + Sync> MultithreadedSimulator<T> {
             crossover_chance,
             population_size,
             mutation_chance,
+            generation: 0,
             stats: Stats::new(),
         }
     }
@@ -33,8 +35,8 @@ impl<T: Agent + Send + Sync> MultithreadedSimulator<T> {
     pub fn run(&mut self, generations: usize) {
         info!("Commencing simulation");
 
-        for i in 0..generations {
-            trace!("Starting generation #{i}");
+        for _ in 0..generations {
+            trace!("Starting generation #{}", self.generation);
 
             let now = Instant::now();
 
@@ -70,9 +72,10 @@ impl<T: Agent + Send + Sync> MultithreadedSimulator<T> {
 
             let generation_stats = self.generate_stats();
 
+            self.generation += 1;
             info!(
-                "Generation #{i} completed in {} seconds: {}",
-                generation_stats, elapsed_time,
+                "Generation #{} completed in {} seconds: {}",
+                self.generation, generation_stats, elapsed_time,
             );
 
             self.stats.push(generation_stats);
