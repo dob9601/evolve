@@ -9,8 +9,11 @@ log = "0.4.22"
 rand = "0.8.5"
 rayon = "1.10.0"
 statrs = "0.17.1"
+plotters = { version = "0.3.3", optional = true }
 
 [dev-dependencies]
 bitvec = "1.0.1"
 env_logger = "0.11.5"
 
+[features]
+graphing = ["dep:plotters"]

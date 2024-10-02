@@ -6,13 +6,17 @@ use rand::{thread_rng, Rng};
 use rayon::prelude::*;
 use statrs::statistics::Statistics;
 
-use crate::{agent::Agent, stats::GenerationStatistics};
+use crate::{
+    agent::Agent,
+    stats::{GenerationStatistics, Stats},
+};
 
-pub struct MultithreadedSimulator<T: Agent<U> {
+pub struct MultithreadedSimulator<T: Agent> {
     agents: Vec<T>,
     crossover_chance: f64,
     mutation_chance: f64,
     population_size: usize,
+    pub stats: Stats,
 }
 
 impl<T: Agent + Send + Sync> MultithreadedSimulator<T> {
@@ -22,6 +26,7 @@ impl<T: Agent + Send + Sync> MultithreadedSimulator<T> {
             crossover_chance,
             population_size,
             mutation_chance,
+            stats: Stats::new(),
         }
     }
 
@@ -63,11 +68,14 @@ impl<T: Agent + Send + Sync> MultithreadedSimulator<T> {
 
             let elapsed_time = now.elapsed().as_millis() as f32 / 1000f32;
 
+            let generation_stats = self.generate_stats();
+
             info!(
                 "Generation #{i} completed in {} seconds: {}",
-                elapsed_time,
-                self.generate_stats()
+                generation_stats, elapsed_time,
             );
+
+            self.stats.push(generation_stats);
         }
     }
 

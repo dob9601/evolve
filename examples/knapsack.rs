@@ -56,7 +56,7 @@ impl Default for KnapsackAgent<'_> {
     }
 }
 
-impl Agent<i16> for KnapsackAgent<'_> {
+impl Agent for KnapsackAgent<'_> {
     fn crossover(&self, other: &Self) -> Self {
         let mut rng = thread_rng();
 
@@ -92,7 +92,7 @@ impl Agent<i16> for KnapsackAgent<'_> {
             .collect_vec()
     }
 
-    fn evaluate(&self) -> i16 {
+    fn evaluate(&self) -> f64 {
         let sack_size_overflow = self.sack.len() as i16 - MAX_ITEMS as i16;
         let sack_weight_overflow = self.get_sack_weight() as i16 - MAX_WEIGHT as i16;
 
@@ -127,4 +127,9 @@ fn main() {
         MultithreadedSimulator::new(10000, 1e-3, 1e-3);
 
     simulator.run(1000);
+
+    simulator
+        .stats
+        .save_graph(&"./graph.bmp".to_string())
+        .unwrap();
 }
