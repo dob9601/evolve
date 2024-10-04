@@ -78,7 +78,13 @@ impl<T: Agent + Send + Sync> MultithreadedSimulator<T> {
                 self.generation, generation_stats, elapsed_time,
             );
 
-            self.stats.push(generation_stats);
+            self.stats.push(
+                &self
+                    .agents
+                    .iter()
+                    .map(|agent| agent.evaluate())
+                    .collect_vec(),
+            );
         }
     }
 

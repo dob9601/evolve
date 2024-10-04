@@ -1,6 +1,8 @@
 use std::fmt::Display;
 use std::path::Path;
 
+use statrs::statistics::Statistics;
+
 pub struct Stats {
     stats: Vec<GenerationStatistics>,
 }
@@ -10,8 +12,14 @@ impl Stats {
         Self { stats: vec![] }
     }
 
-    pub fn push(&mut self, stat: GenerationStatistics) {
-        self.stats.push(stat);
+    pub fn push(&mut self, scores: &[f64]) {
+        let min = scores.min();
+        let max = scores.max();
+        let mean = scores.mean();
+        let std_deviation = scores.std_dev();
+
+        self.stats
+            .push(GenerationStatistics::new(min, max, mean, std_deviation));
     }
 
     #[cfg(feature = "graphing")]
@@ -68,8 +76,8 @@ impl Stats {
         Ok(())
     }
 
-    /// Find the lowest scoring agent's score across any generation
-    fn lowest_value(&self) -> f64 {
+    /// Find the lowest scoring agent's score across any generation. Useful for scaling graphs.
+    fn lowest_minima(&self) -> f64 {
         self.stats
             .iter()
             .map(|stat| stat.min)
@@ -77,12 +85,19 @@ impl Stats {
             .unwrap()
     }
 
-    fn highest_value(&self) -> f64 {
+    /// Find the highest scoring agent's score across any generation. Useful for scaling graphs.
+    fn highest_maxima(&self) -> f64 {
         self.stats
             .iter()
             .map(|stat| stat.max)
             .max_by(|a, b| a.total_cmp(&b))
             .unwrap()
+    }
+}
+
+impl Default for Stats {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
