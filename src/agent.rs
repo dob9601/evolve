@@ -7,11 +7,11 @@ pub trait Agent: Default + Debug + Clone {
     /// Mutate the agent
     fn mutate(&mut self, mutation_chance: f64);
 
-    /// Evaluate the agent's fitness, ignoring any cached values.
+    /// Evaluate the agent's fitness, ignoring any cached value.
     fn evaluate_uncached(&self) -> f64;
 
     /// Evaluate the agent, returning a cached value if there is one to avoid expensive function calls
-    fn evaluate(&mut self) -> f64 {
+    fn evaluate(&self) -> f64 {
         if let Some(evaluation) = self.get_cached_evaluation() {
             evaluation
         } else {
@@ -23,5 +23,5 @@ pub trait Agent: Default + Debug + Clone {
 
     fn get_cached_evaluation(&self) -> Option<f64>;
 
-    fn set_cached_evaluation(&mut self, evaluation: Option<f64>);
+    fn set_cached_evaluation(&self, evaluation: Option<f64>);
 }

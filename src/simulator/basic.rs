@@ -69,21 +69,21 @@ impl<T: Agent> BasicSimulator<T> {
         }
     }
 
-    pub fn best_agent(&self) -> Option<T> {
+    pub fn best_agent(&mut self) -> Option<T> {
         self.agents
             .iter()
             .max_by(|agent, other| agent.evaluate().total_cmp(&other.evaluate()))
             .cloned()
     }
 
-    pub fn worst_agent(&self) -> Option<T> {
+    pub fn worst_agent(&mut self) -> Option<T> {
         self.agents
             .iter()
             .min_by(|agent, other| other.evaluate().total_cmp(&agent.evaluate()))
             .cloned()
     }
 
-    pub fn generate_stats(&self) -> GenerationStatistics {
+    pub fn generate_stats(&mut self) -> GenerationStatistics {
         let scores = self
             .agents
             .iter()

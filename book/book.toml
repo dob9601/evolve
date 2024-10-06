@@ -1,0 +1,8 @@
+[book]
+authors = ["Dan O'Brien"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Covington User Guide"
+
+default-theme = "ayu"

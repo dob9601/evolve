@@ -33,7 +33,7 @@ pub trait Simulator<T: Agent> {
 
     fn best_agent(&self) -> Option<T> {
         self.agents()
-            .iter()
+            .iter_mut()
             .max_by(|agent, other| agent.evaluate().total_cmp(&other.evaluate()))
             .cloned()
     }
