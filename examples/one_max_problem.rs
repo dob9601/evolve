@@ -49,16 +49,8 @@ impl Agent for OneMaxAgent {
         }
     }
 
-    fn evaluate_uncached(&self) -> f64 {
+    fn evaluate(&self) -> f64 {
         self.genome.iter_ones().count() as f64
-    }
-
-    fn get_cached_evaluation(&self) -> Option<f64> {
-        todo!()
-    }
-
-    fn set_cached_evaluation(&self, evaluation: Option<f64>) {
-        todo!()
     }
 }
 

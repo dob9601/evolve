@@ -128,8 +128,8 @@ fn main() {
 
     simulator.run(1000);
 
-    simulator
-        .stats
-        .save_graph(&"./graph.bmp".to_string())
-        .unwrap();
+    // simulator
+    //     .stats
+    //     // .save_graph(&"./graph.bmp".to_string())
+    //     .unwrap();
 }
