@@ -1,3 +1,5 @@
+use std::sync::{Arc, Mutex};
+
 use bitvec::{array::BitArray, bitarr};
 use evolve::{agent::Agent, simulator::MultithreadedSimulator};
 use rand::Rng;
@@ -5,12 +7,14 @@ use rand::Rng;
 #[derive(Debug, Clone)]
 pub struct OneMaxAgent {
     genome: BitArray,
+    evaluation: Arc<Mutex<Option<f64>>>,
 }
 
 impl OneMaxAgent {
     pub fn new() -> Self {
         let mut agent = OneMaxAgent {
             genome: bitarr![0; 64],
+            evaluation: Arc::new(Mutex::new(None)),
         };
 
         agent.mutate(0.5);
@@ -38,7 +42,10 @@ impl Agent for OneMaxAgent {
             }
         }
 
-        Self { genome }
+        Self {
+            genome,
+            evaluation: Arc::new(Mutex::new(None)),
+        }
     }
 
     fn mutate(&mut self, mutation_chance: f64) {
@@ -50,7 +57,17 @@ impl Agent for OneMaxAgent {
     }
 
     fn evaluate(&self) -> f64 {
-        self.genome.iter_ones().count() as f64
+        let mut mutex = self.evaluation.lock().unwrap();
+
+        if let Some(evaluation) = *mutex {
+            evaluation
+        } else {
+            let evaluation = self.genome.iter_ones().count() as f64;
+
+            *mutex = Some(evaluation);
+
+            evaluation
+        }
     }
 }
 

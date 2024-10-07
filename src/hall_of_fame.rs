@@ -60,17 +60,15 @@ mod tests {
     fn test_hof_store() {
         let mut hof = HallOfFame::new(5);
 
-        hof.store(MockAgent(13 as f64));
-        hof.store(MockAgent(9 as f64));
-        hof.store(MockAgent(10 as f64));
-        hof.store(MockAgent(7 as f64));
-        hof.store(MockAgent(5 as f64));
-        hof.store(MockAgent(12 as f64));
-        hof.store(MockAgent(11 as f64));
-        hof.store(MockAgent(8 as f64));
-        hof.store(MockAgent(6 as f64));
-
-        dbg!(hof.agents.clone());
+        hof.store(MockAgent(13f64));
+        hof.store(MockAgent(9f64));
+        hof.store(MockAgent(10f64));
+        hof.store(MockAgent(7f64));
+        hof.store(MockAgent(5f64));
+        hof.store(MockAgent(12f64));
+        hof.store(MockAgent(11f64));
+        hof.store(MockAgent(8f64));
+        hof.store(MockAgent(6f64));
 
         assert_eq!(hof.agents.len(), 5);
 
