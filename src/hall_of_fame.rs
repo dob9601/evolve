@@ -33,6 +33,8 @@ impl<T: Agent> HallOfFame<T> {
     fn truncate(&mut self) {
         self.agents.truncate(self.max_agents);
     }
+
+    pub fn min_score(&self) 
 }
 
 #[cfg(test)]
