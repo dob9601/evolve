@@ -33,8 +33,6 @@ impl<T: Agent> HallOfFame<T> {
     fn truncate(&mut self) {
         self.agents.truncate(self.max_agents);
     }
-
-    pub fn min_score(&self) 
 }
 
 #[cfg(test)]
@@ -53,7 +51,7 @@ mod tests {
             todo!()
         }
 
-        fn evaluate(&self) -> f64 {
+        fn evaluate_uncached(&self) -> f64 {
             self.0
         }
     }

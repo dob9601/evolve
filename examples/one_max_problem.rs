@@ -56,7 +56,7 @@ impl Agent for OneMaxAgent {
         }
     }
 
-    fn evaluate(&self) -> f64 {
+    fn evaluate_uncached(&self) -> f64 {
         let mut mutex = self.evaluation.lock().unwrap();
 
         if let Some(evaluation) = *mutex {
